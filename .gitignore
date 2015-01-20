@@ -1,6 +1,7 @@
 #IntelliJ Idea
 .idea/
 .DS_Store
+*.iml
 
 # Built application files
 *.apk
@@ -28,4 +29,3 @@ proguard/
 
 # Log Files
 *.log
-*.iml
