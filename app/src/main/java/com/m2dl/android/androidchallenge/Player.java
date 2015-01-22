@@ -15,7 +15,11 @@ public class Player implements Parcelable {
     public static final Creator<Player> CREATOR = new Creator<Player>() {
         @Override
         public Player createFromParcel(Parcel source) {
-            return null;
+            Player p = new Player();
+            p.setPseudo(source.readString());
+            p.setScore(source.readInt());
+            p.setColor(source.readInt());
+            return p;
         }
 
         @Override
