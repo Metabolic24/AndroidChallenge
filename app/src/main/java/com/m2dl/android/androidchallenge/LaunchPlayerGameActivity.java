@@ -58,6 +58,10 @@ public class LaunchPlayerGameActivity extends ActionBarActivity {
 
         players = getIntent().getExtras().getParcelableArrayList("PLAYERS");
 
+        ratio = 0.25; //DIFFICILE
+        ratio = 0.30; //MOYEN
+        ratio = 0.35; //FACILE
+
         //lecture et set nom joueur
         String playerName = players.get(currentPlayer).getPseudo();
         TextView playerNameTextView = (TextView)findViewById(R.id.textPlayerName);
@@ -96,21 +100,12 @@ public class LaunchPlayerGameActivity extends ActionBarActivity {
                     cpt--;
                 }
                 else{
-                    //lancer photo ici
-
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(intent,CAPTURE_IMAGE);
                 }
                 handler.postDelayed(this, 1000);
             }
         }, 1000);
-
-
-        color = Color.RED;
-        ratio = 0.25; //DIFFICILE
-        ratio = 0.30; //MOYEN
-        ratio = 0.35; //FACILE
-
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent,CAPTURE_IMAGE);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
