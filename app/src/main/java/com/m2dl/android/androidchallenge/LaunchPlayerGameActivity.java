@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.provider.MediaStore;
-import android.content.Intent;
-import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -50,7 +48,6 @@ public class LaunchPlayerGameActivity extends ActionBarActivity {
         }
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,20 +59,24 @@ public class LaunchPlayerGameActivity extends ActionBarActivity {
         ratio = 0.30; //MOYEN
         ratio = 0.35; //FACILE
 
+        launchNewGameInterface();
+    }
+
+    private void launchNewGameInterface(){
+
         //lecture et set nom joueur
         String playerName = players.get(currentPlayer).getPseudo();
         TextView playerNameTextView = (TextView)findViewById(R.id.textPlayerName);
         playerNameTextView.setText(this.getString(R.string.player_turn) + playerName);
 
-
         //détermination couleur random
         Random rand = new Random();
 
         int Red = rand.nextInt(255);
-        int Green= rand.nextInt(255);
-        int Blue= rand.nextInt(255);
+        int Green = rand.nextInt(255);
+        int Blue = rand.nextInt(255);
 
-        color=Color.rgb(Red, Green, Blue);
+        color = Color.rgb(Red, Green, Blue);
 
         //ajout couleur sur l'interface
         FrameLayout colorLayout = (FrameLayout)findViewById(R.id.color_layout);
@@ -134,6 +135,18 @@ public class LaunchPlayerGameActivity extends ActionBarActivity {
                         setPlayerScore(treatBitmap(bitmap));
                     }
                 }
+                //test si il reste des joueurs devant jouer
+                if(currentPlayer > players.size() - 1){
+                    currentPlayer++;
+                    launchNewGameInterface();
+                }
+                else{
+                    //Intent reviewIntent = new Intent(this, ReviewActivity.class);
+                    //startGameIntent.putParcelableArrayListExtra("PLAYERS", players);
+                    //startActivity(reviewIntent);
+                    Log.e("launch", "fini");
+                }
+                break;
         }
     }
 
