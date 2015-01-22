@@ -30,7 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="5"
+        android:text="7"
         android:id="@+id/textChronoLaunch"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"

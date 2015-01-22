@@ -1,6 +1,8 @@
 package com.m2dl.android.androidchallenge;
 
+import android.content.Intent;
 import android.graphics.Color;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -10,7 +12,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Random;
-
 
 public class LaunchPlayerGameActivity extends ActionBarActivity {
 
@@ -39,7 +40,6 @@ public class LaunchPlayerGameActivity extends ActionBarActivity {
         int Blue= rand.nextInt(255);
 
         color = new Color();
-        color.argb(0, Red, Green, Blue);
 
         //ajout couleur sur l'interface
         FrameLayout colorLayout = (FrameLayout)findViewById(R.id.color_layout);
@@ -49,9 +49,27 @@ public class LaunchPlayerGameActivity extends ActionBarActivity {
         colorNameTextView.setText(String.valueOf(Red) + " " + String.valueOf(Green) + " " + String.valueOf(Blue));
 
         //ajout couleur dans la classe Player
+        players.get(currentPlayer).setColor(color.rgb(Red, Green, Blue));
 
+        //lancement chrono 7 sec
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            TextView chronoTextView = (TextView)findViewById(R.id.textChronoLaunch);
+            int cpt = 6;
 
-        //lancement chrono 5 sec
+            @Override
+            public void run() {
+                if(cpt > 0) {
+                    chronoTextView.setText(String.valueOf(cpt));
+                    cpt--;
+                }
+                else{
+                    //lancer photo ici
+
+                }
+                handler.postDelayed(this, 1000);
+            }
+        }, 1000);
 
     }
 
