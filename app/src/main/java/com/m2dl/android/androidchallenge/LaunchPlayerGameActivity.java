@@ -1,11 +1,8 @@
 package com.m2dl.android.androidchallenge;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -22,12 +19,8 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,10 +60,10 @@ public class LaunchPlayerGameActivity extends Activity implements SensorEventLis
 
         switch(getIntent().getExtras().getInt("DIFFICULTY")) {
             case 1:
-                ratio = 0.30; //MOYEN
+                ratio = 0.25; //MOYEN
                 break;
             case 2:
-                ratio = 0.25; //DIFFICILE
+                ratio = 0.15; //DIFFICILE
                 break;
             default:
                 ratio = 0.35; //FACILE
