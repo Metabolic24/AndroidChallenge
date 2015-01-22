@@ -27,14 +27,10 @@ public class ReviewActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_review);
+        layoutPlayer = (LinearLayout) findViewById(R.id.layoutPlayerReview);
         players = getIntent().getExtras().getParcelableArrayList("PLAYERS");
-        Collections.sort(players, new Comparator<Player>() {
-            @Override
-            public int compare(Player lhs, Player rhs) {
-                return lhs.getScore() - rhs.getScore();
-            }
-        });
+        Collections.sort(players);
         int i = 0;
 
         for(Player p : players) {

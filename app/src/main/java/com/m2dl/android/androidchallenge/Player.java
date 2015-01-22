@@ -7,7 +7,7 @@ import android.os.Parcelable;
 /**
  * Created by loic on 22/01/15.
  */
-public class Player implements Parcelable {
+public class Player implements Parcelable, Comparable<Player> {
     private String pseudo;
     private int score;
     private int color;
@@ -73,5 +73,10 @@ public class Player implements Parcelable {
         dest.writeString(pseudo);
         dest.writeInt(score);
         dest.writeInt(color);
+    }
+
+    @Override
+    public int compareTo(Player another) {
+        return -getScore() - another.getScore();
     }
 }

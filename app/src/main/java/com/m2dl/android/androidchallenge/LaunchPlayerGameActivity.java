@@ -125,14 +125,15 @@ public class LaunchPlayerGameActivity extends Activity {
                     }
 
                     //test si il reste des joueurs devant jouer
-                    if(currentPlayer > players.size() - 1){
+                    if(currentPlayer < players.size()-1){
                         currentPlayer++;
                         launchNewGameInterface();
+
                     }
                     else{
-                        //Intent reviewIntent = new Intent(this, ReviewActivity.class);
-                        //startGameIntent.putParcelableArrayListExtra("PLAYERS", players);
-                        //startActivity(reviewIntent);
+                        Intent reviewIntent = new Intent(this, ReviewActivity.class);
+                        reviewIntent.putParcelableArrayListExtra("PLAYERS", players);
+                        startActivity(reviewIntent);
                         Log.e("launch", "fini");
                     }
                 }
@@ -148,7 +149,6 @@ public class LaunchPlayerGameActivity extends Activity {
     }
 
     public int treatBitmap(Bitmap bitmap) {
-        ImageView iv = (ImageView)findViewById(R.id.imageView);
         int score = 0;
 
         bitmap = Bitmap.createScaledBitmap(bitmap,bitmap.getWidth()/10,bitmap.getHeight()/10,false);
@@ -182,9 +182,7 @@ public class LaunchPlayerGameActivity extends Activity {
             }
         }
 
-        bitmapList.add(currentPlayer,bitmap);
-
-        iv.setImageBitmap(bitmap);
+        bitmapList.add(currentPlayer, bitmap);
         return score;
     }
 }

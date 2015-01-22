@@ -20,6 +20,10 @@
             android:name=".LaunchPlayerGameActivity"
             android:label="@string/title_activity_launch_player_game" >
         </activity>
+        <activity
+            android:name=".ReviewActivity"
+            android:label="@string/title_activity_review" >
+        </activity>
     </application>
 
 </manifest>
