@@ -26,7 +26,7 @@ public class LaunchPlayerGameActivity extends ActionBarActivity {
         players = getIntent().getExtras().getParcelableArrayList("PLAYERS");
 
         //lecture et set nom joueur
-        String playerName = "";//players.get(currentPlayer).getPseudo();
+        String playerName = players.get(currentPlayer).getPseudo();
         TextView playerNameTextView = (TextView)findViewById(R.id.textPlayerName);
         playerNameTextView.setText(this.getString(R.string.player_turn) + playerName);
 
