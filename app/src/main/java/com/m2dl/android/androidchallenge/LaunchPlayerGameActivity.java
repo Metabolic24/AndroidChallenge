@@ -121,11 +121,14 @@ public class LaunchPlayerGameActivity extends Activity {
                         @Override
                         public void run() {
                             if(cptTempsRestant > 0) {
-                                ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(100);
+                                if(cptTempsRestant < 5) {
+                                    ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(500);
+                                }
                                 cptTempsRestant--;
                                 handlerVibration.postDelayed(this, 2000);
                             }
                             else{
+                                ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(2000);
                                 //stop activite photo
                             }
                         }
