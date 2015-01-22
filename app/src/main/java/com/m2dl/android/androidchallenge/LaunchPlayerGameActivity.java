@@ -8,41 +8,45 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 
 public class LaunchPlayerGameActivity extends ActionBarActivity {
 
-
     private Color color;
+    private ArrayList<Player> players;
+    private int currentPlayer = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch_player_game);
 
+        players = getIntent().getExtras().getParcelableArrayList("PLAYERS");
+
         //lecture et set nom joueur
-        String playerName = "temp";
+        String playerName = "";//players.get(currentPlayer).getPseudo();
         TextView playerNameTextView = (TextView)findViewById(R.id.textPlayerName);
         playerNameTextView.setText(this.getString(R.string.player_turn) + playerName);
 
 
         //détermination couleur random
         Random rand = new Random();
-        float r = rand.nextFloat();
-        float g = rand.nextFloat();
-        float b = rand.nextFloat();
 
-        int Red = Integer.parseInt(String.valueOf(r));
-        int Green= Integer.parseInt(String.valueOf(g));
-        int Blue= Integer.parseInt(String.valueOf(b));
+        int Red = rand.nextInt(255);
+        int Green= rand.nextInt(255);
+        int Blue= rand.nextInt(255);
 
         color = new Color();
         color.argb(0, Red, Green, Blue);
 
         //ajout couleur sur l'interface
         FrameLayout colorLayout = (FrameLayout)findViewById(R.id.color_layout);
-        colorLayout.setBackgroundColor(color.argb(0, Red, Green, Blue));
+        colorLayout.setBackgroundColor(color.rgb(Red, Green, Blue));
+
+        TextView colorNameTextView = (TextView)findViewById(R.id.textColorName);
+        colorNameTextView.setText(String.valueOf(Red) + " " + String.valueOf(Green) + " " + String.valueOf(Blue));
 
         //ajout couleur dans la classe Player
 
