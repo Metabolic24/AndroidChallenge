@@ -99,12 +99,12 @@ public class LaunchPlayerGameActivity extends ActionBarActivity {
                 if(cpt > 0) {
                     chronoTextView.setText(String.valueOf(cpt));
                     cpt--;
+                    handler.postDelayed(this, 1000);
                 }
                 else{
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     startActivityForResult(intent,CAPTURE_IMAGE);
                 }
-                handler.postDelayed(this, 1000);
             }
         }, 1000);
     }
@@ -133,18 +133,20 @@ public class LaunchPlayerGameActivity extends ActionBarActivity {
                     if (bitmap!=null) {
                         setPlayerScore(treatBitmap(bitmap));
                     }
+
+                    //test si il reste des joueurs devant jouer
+                    if(currentPlayer > players.size() - 1){
+                        currentPlayer++;
+                        launchNewGameInterface();
+                    }
+                    else{
+                        //Intent reviewIntent = new Intent(this, ReviewActivity.class);
+                        //startGameIntent.putParcelableArrayListExtra("PLAYERS", players);
+                        //startActivity(reviewIntent);
+                        Log.e("launch", "fini");
+                    }
                 }
-                //test si il reste des joueurs devant jouer
-                if(currentPlayer > players.size() - 1){
-                    currentPlayer++;
-                    launchNewGameInterface();
-                }
-                else{
-                    //Intent reviewIntent = new Intent(this, ReviewActivity.class);
-                    //startGameIntent.putParcelableArrayListExtra("PLAYERS", players);
-                    //startActivity(reviewIntent);
-                    Log.e("launch", "fini");
-                }
+
                 break;
         }
     }
