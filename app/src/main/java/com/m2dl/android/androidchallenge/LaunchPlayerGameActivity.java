@@ -5,6 +5,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import java.util.Random;
@@ -32,10 +33,16 @@ public class LaunchPlayerGameActivity extends ActionBarActivity {
         float g = rand.nextFloat();
         float b = rand.nextFloat();
 
+        int Red = Integer.parseInt(String.valueOf(r));
+        int Green= Integer.parseInt(String.valueOf(g));
+        int Blue= Integer.parseInt(String.valueOf(b));
+
         color = new Color();
+        color.argb(0, Red, Green, Blue);
 
         //ajout couleur sur l'interface
-
+        FrameLayout colorLayout = (FrameLayout)findViewById(R.id.color_layout);
+        colorLayout.setBackgroundColor(color.argb(0, Red, Green, Blue));
 
         //ajout couleur dans la classe Player
 

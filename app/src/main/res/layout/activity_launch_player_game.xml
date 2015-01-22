@@ -54,6 +54,7 @@
         android:layout_above="@+id/textColorName"
         android:layout_alignLeft="@+id/textView"
         android:layout_alignStart="@+id/textView"
-        android:background="#ff1c53ff"></FrameLayout>
+        android:background="#ff1c53ff"
+        android:id="@+id/color_layout"></FrameLayout>
 
 </RelativeLayout>
