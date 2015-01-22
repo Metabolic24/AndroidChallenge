@@ -67,7 +67,7 @@ public class LaunchPlayerGameActivity extends Activity {
         //lecture et set nom joueur
         String playerName = players.get(currentPlayer).getPseudo();
         TextView playerNameTextView = (TextView)findViewById(R.id.textPlayerName);
-        playerNameTextView.setText(this.getString(R.string.player_turn) + playerName);
+        playerNameTextView.setText(this.getString(R.string.player_turn) + " " + playerName);
 
         //détermination couleur random
         Random rand = new Random();
@@ -89,6 +89,8 @@ public class LaunchPlayerGameActivity extends Activity {
         players.get(currentPlayer).setColor(color);
 
         //lancement chrono 7 sec
+        TextView chronoTextView = (TextView)findViewById(R.id.textChronoLaunch);
+        chronoTextView.setText("7");
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             TextView chronoTextView = (TextView)findViewById(R.id.textChronoLaunch);
@@ -135,14 +137,15 @@ public class LaunchPlayerGameActivity extends Activity {
                     }
 
                     //test si il reste des joueurs devant jouer
-                    if(currentPlayer > players.size() - 1){
+                    if(currentPlayer < players.size()-1){
                         currentPlayer++;
                         launchNewGameInterface();
+
                     }
                     else{
-                        //Intent reviewIntent = new Intent(this, ReviewActivity.class);
-                        //startGameIntent.putParcelableArrayListExtra("PLAYERS", players);
-                        //startActivity(reviewIntent);
+                        Intent reviewIntent = new Intent(this, ReviewActivity.class);
+                        reviewIntent.putParcelableArrayListExtra("PLAYERS", players);
+                        startActivity(reviewIntent);
                         Log.e("launch", "fini");
                     }
                 }
@@ -158,7 +161,6 @@ public class LaunchPlayerGameActivity extends Activity {
     }
 
     public int treatBitmap(Bitmap bitmap) {
-        ImageView iv = (ImageView)findViewById(R.id.imageView);
         int score = 0;
 
         bitmap = Bitmap.createScaledBitmap(bitmap,bitmap.getWidth()/10,bitmap.getHeight()/10,false);
@@ -192,9 +194,7 @@ public class LaunchPlayerGameActivity extends Activity {
             }
         }
 
-        bitmapList.add(currentPlayer,bitmap);
-
-        iv.setImageBitmap(bitmap);
+        bitmapList.add(currentPlayer, bitmap);
         return score;
     }
 

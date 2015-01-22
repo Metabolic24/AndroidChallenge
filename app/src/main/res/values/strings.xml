@@ -5,7 +5,12 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_launch_player_game">LaunchPlayerGameActivity</string>
-    <string name="player_turn">Tour de  : </string>
-    <string name="player_color_affected">Votre couleur</string>
-
+    <string name="player_turn">C\'est au tour de</string>
+    <string name="player_color_affected">_______Votre couleur_______</string>
+    <string name="chooseDifficulty">Difficulté</string>
+    <string name="choosePlayer">Joueurs</string>
+    <string name="addPlayer">Joueur supplémentaire</string>
+    <string name="play">Jouer</string>
+    <string name="title_activity_review">ReviewActivity</string>
+    
 </resources>
