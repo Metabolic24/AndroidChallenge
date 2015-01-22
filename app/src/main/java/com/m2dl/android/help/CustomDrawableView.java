@@ -1,3 +1,4 @@
+/*
 package com.m2dl.helloandroid.helloandroid2;
 
 import android.content.Context;
@@ -48,3 +49,4 @@ public class CustomDrawableView extends View{
         mDrawable.draw(canvas);
     }
 }
+*/

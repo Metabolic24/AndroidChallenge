@@ -1,3 +1,4 @@
+/*
 package com.m2dl.helloandroid.helloandroid2;
 
 import android.app.Activity;
@@ -15,9 +16,11 @@ import android.widget.Toast;
 
 import java.io.File;
 
+*/
 /**
  * Created by root on 08/01/15.
- */
+ *//*
+
 public class Photo extends Activity {
 
     private static final int CAPTURE_IMAGE = 5654;
@@ -98,3 +101,4 @@ public class Photo extends Activity {
     }
 
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package com.m2dl.helloandroid.helloandroid2;
 
 import android.app.Activity;
@@ -17,9 +18,11 @@ import java.net.URLConnection;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+*/
 /**
  * Created by root on 08/01/15.
- */
+ *//*
+
 public class Reseau extends Activity {
 
     TextView tv;
@@ -51,3 +54,4 @@ public class Reseau extends Activity {
         }
     }
 }
+*/
