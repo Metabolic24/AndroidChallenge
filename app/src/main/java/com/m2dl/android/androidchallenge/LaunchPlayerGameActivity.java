@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -199,7 +198,7 @@ public class LaunchPlayerGameActivity extends Activity {
         return score;
     }
 
-    public void showBitmap(int playerIndex) {
+    public void showBitmap(final int playerIndex) {
 
         //Création de la Dialog
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -207,6 +206,10 @@ public class LaunchPlayerGameActivity extends Activity {
         // Création d'une zone d'édition de texte
         final ImageView input = new ImageView(this);
         final GestureDetector gestureDetector = new GestureDetector(alert.getContext(), new GestureDetector.SimpleOnGestureListener(){
+
+            int player = playerIndex;
+            int nbPlayers = players.size();
+
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
                 try {
@@ -214,11 +217,19 @@ public class LaunchPlayerGameActivity extends Activity {
                         return false;
                     // right to left swipe
                     if(e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                        Toast.makeText(LaunchPlayerGameActivity.this, "Left Swipe", Toast.LENGTH_SHORT).show();
+                        player = (playerIndex + 1);
+                        if(player==nbPlayers) {
+                            player = 0;
+                        }
+                        input.setImageBitmap(bitmapList.get(player));
                     }
                     //left to right swipe
                     else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                        Toast.makeText(LaunchPlayerGameActivity.this, "Right Swipe", Toast.LENGTH_SHORT).show();
+                        player = (playerIndex - 1);
+                        if(player<0) {
+                            player = nbPlayers - 1;
+                        }
+                        input.setImageBitmap(bitmapList.get(player));
                     }
                 } catch (Exception e) {
                     // nothing
