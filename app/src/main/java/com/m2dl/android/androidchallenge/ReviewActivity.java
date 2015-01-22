@@ -1,6 +1,7 @@
 package com.m2dl.android.androidchallenge;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -72,5 +73,20 @@ public class ReviewActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void newGame() {
+        Intent intent = new Intent(this,SelectionPlayerActivity.class);
+        startActivity(intent);
+    }
+
+    public void playAgain() {
+        setResult(RESULT_CANCELED);
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        newGame();
     }
 }

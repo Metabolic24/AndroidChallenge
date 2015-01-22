@@ -28,11 +28,12 @@ public class LaunchPlayerGameActivity extends Activity {
     private static final int SWIPE_MAX_OFF_PATH = 250;
     private static final int SWIPE_THRESHOLD_VELOCITY = 200;
     private final static int CAPTURE_IMAGE = 666;
+    private final static int REVIEW_ACTIVITY = 69;
     private final static double MAX_DELTA = Math.sqrt(255 * 255 * 3);
 
     private int color;
     private ArrayList<Player> players;
-    private int currentPlayer = 0;
+    private int currentPlayer;
 
 
     private double ratio;
@@ -42,7 +43,6 @@ public class LaunchPlayerGameActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_launch_player_game);
 
         players = getIntent().getExtras().getParcelableArrayList("PLAYERS");
 
@@ -57,12 +57,15 @@ public class LaunchPlayerGameActivity extends Activity {
                 ratio = 0.35; //FACILE
         }
 
-        bitmapList = new ArrayList<>();
-
         launchNewGameInterface();
     }
 
     private void launchNewGameInterface(){
+        setContentView(R.layout.activity_launch_player_game);
+
+        //Initialisation des variables globales
+        currentPlayer = 0;
+        bitmapList = new ArrayList<>();
 
         //lecture et set nom joueur
         String playerName = players.get(currentPlayer).getPseudo();
@@ -115,9 +118,18 @@ public class LaunchPlayerGameActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (requestCode) {
+            //Si l'activité est le récapitulatif des scores
+            case REVIEW_ACTIVITY:
+                if(resultCode==RESULT_OK) {
+                    showBitmap(0);
+                }
+                else if(resultCode==RESULT_CANCELED) {
+                    launchNewGameInterface();
+                }
+                break;
             //Si l'activité était une prise de photo
             case CAPTURE_IMAGE:
-                if (resultCode == Activity.RESULT_OK) {
+                if (resultCode == RESULT_OK) {
                     Bitmap bitmap = null;
                     ContentResolver cr = getContentResolver();
 
@@ -145,9 +157,12 @@ public class LaunchPlayerGameActivity extends Activity {
                     else{
                         Intent reviewIntent = new Intent(this, ReviewActivity.class);
                         reviewIntent.putParcelableArrayListExtra("PLAYERS", players);
-                        startActivity(reviewIntent);
-                        Log.e("launch", "fini");
+                        startActivityForResult(reviewIntent,REVIEW_ACTIVITY);
                     }
+                }
+                else {
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(intent,CAPTURE_IMAGE);
                 }
 
                 break;
@@ -156,8 +171,8 @@ public class LaunchPlayerGameActivity extends Activity {
 
     public void setPlayerScore(int pixelsNumber) {
         Bitmap bitmap = bitmapList.get(currentPlayer);
-        double score = (pixelsNumber * 100)/(bitmap.getHeight()*bitmap.getWidth());
-        players.get(currentPlayer).setScore((int) score);
+        int score = (pixelsNumber * 100)/(bitmap.getHeight()*bitmap.getWidth());
+        players.get(currentPlayer).setScore(score);
     }
 
     public int treatBitmap(Bitmap bitmap) {
@@ -200,8 +215,12 @@ public class LaunchPlayerGameActivity extends Activity {
 
     public void showBitmap(final int playerIndex) {
 
+        setContentView(new View(this));
+
         //Création de la Dialog
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        alert.setCancelable(true);
 
         // Création d'une zone d'édition de texte
         final ImageView input = new ImageView(this);
@@ -217,7 +236,7 @@ public class LaunchPlayerGameActivity extends Activity {
                         return false;
                     // right to left swipe
                     if(e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                        player = (playerIndex + 1);
+                        player = (player + 1);
                         if(player==nbPlayers) {
                             player = 0;
                         }
@@ -225,7 +244,7 @@ public class LaunchPlayerGameActivity extends Activity {
                     }
                     //left to right swipe
                     else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                        player = (playerIndex - 1);
+                        player = (player - 1);
                         if(player<0) {
                             player = nbPlayers - 1;
                         }
@@ -265,5 +284,10 @@ public class LaunchPlayerGameActivity extends Activity {
         });
 
         alert.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        //Nothing
     }
 }

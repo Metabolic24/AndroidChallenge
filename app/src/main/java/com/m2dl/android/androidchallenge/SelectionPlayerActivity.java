@@ -112,7 +112,11 @@ public class SelectionPlayerActivity extends ActionBarActivity{
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        System.exit(RESULT_CANCELED);
     }
 }
