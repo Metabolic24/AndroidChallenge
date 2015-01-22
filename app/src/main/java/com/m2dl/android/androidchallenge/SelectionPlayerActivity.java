@@ -33,9 +33,9 @@ public class SelectionPlayerActivity extends ActionBarActivity{
         final Spinner spinnerDifficulty = (Spinner) findViewById(R.id.spinnerDifficulty);
 
         List<String> spinnerArray = new ArrayList<String>();
-        spinnerArray.add("Easy");
-        spinnerArray.add("Medium");
-        spinnerArray.add("Hard");
+        spinnerArray.add("Facile");
+        spinnerArray.add("Moyen");
+        spinnerArray.add("Difficile");
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                 this, android.R.layout.simple_spinner_item, spinnerArray);
@@ -59,7 +59,7 @@ public class SelectionPlayerActivity extends ActionBarActivity{
                     players.add(new Player());
                 }
                 else {
-                    Toast.makeText(SelectionPlayerActivity.this, MAX_PLAYERS + " players are authorized", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SelectionPlayerActivity.this, MAX_PLAYERS + " joueurs maximum", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -87,7 +87,7 @@ public class SelectionPlayerActivity extends ActionBarActivity{
                     startActivity(startGameIntent);
                 }
                 else {
-                    Toast.makeText(SelectionPlayerActivity.this, "Empty pseudo are not allowed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SelectionPlayerActivity.this, "Les pseudos vides ne sont pas autorisés", Toast.LENGTH_SHORT).show();
                 }
             }
         });
