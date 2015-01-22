@@ -57,7 +57,7 @@ public class LaunchPlayerGameActivity extends Activity {
         //lecture et set nom joueur
         String playerName = players.get(currentPlayer).getPseudo();
         TextView playerNameTextView = (TextView)findViewById(R.id.textPlayerName);
-        playerNameTextView.setText(this.getString(R.string.player_turn) + playerName);
+        playerNameTextView.setText(this.getString(R.string.player_turn) + " " + playerName);
 
         //détermination couleur random
         Random rand = new Random();
@@ -79,6 +79,8 @@ public class LaunchPlayerGameActivity extends Activity {
         players.get(currentPlayer).setColor(color);
 
         //lancement chrono 7 sec
+        TextView chronoTextView = (TextView)findViewById(R.id.textChronoLaunch);
+        chronoTextView.setText("7");
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             TextView chronoTextView = (TextView)findViewById(R.id.textChronoLaunch);

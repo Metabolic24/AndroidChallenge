@@ -22,9 +22,9 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/player_color_affected"
         android:id="@+id/textView"
+        android:layout_marginTop="34dp"
         android:layout_below="@+id/textPlayerName"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="59dp" />
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -32,9 +32,10 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="7"
         android:id="@+id/textChronoLaunch"
+        android:layout_marginBottom="69dp"
+        android:textSize="@android:dimen/notification_large_icon_width"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="103dp" />
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -42,7 +43,8 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="couleur"
         android:id="@+id/textColorName"
-        android:layout_centerVertical="true"
+        android:layout_marginBottom="59dp"
+        android:layout_above="@+id/textChronoLaunch"
         android:layout_centerHorizontal="true" />
 
     <FrameLayout
