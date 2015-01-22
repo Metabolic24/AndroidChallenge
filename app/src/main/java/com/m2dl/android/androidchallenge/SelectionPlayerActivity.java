@@ -22,6 +22,8 @@ public class SelectionPlayerActivity extends Activity {
     private static final int LAUNCH_ACTIVITY = 28;
     private LinearLayout layoutPlayer;
     private ArrayList<Player> players = new ArrayList<>();
+    private static int playerName = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,31 +32,63 @@ public class SelectionPlayerActivity extends Activity {
         layoutPlayer = (LinearLayout) findViewById(R.id.layoutPlayer);
         final Spinner spinnerDifficulty = (Spinner) findViewById(R.id.spinnerDifficulty);
 
-        List<String> spinnerArray = new ArrayList<String>();
+        List<String> spinnerArray = new ArrayList<>();
         spinnerArray.add("Facile");
         spinnerArray.add("Moyen");
         spinnerArray.add("Difficile");
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                this, android.R.layout.simple_spinner_dropdown_item, spinnerArray);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this, R.layout.custom_spinner_item, spinnerArray);
 
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerDifficulty.setAdapter(adapter);
 
-        Button btnAddPlayer = (Button) findViewById(R.id.btnAddPlayer);
+        final Button btnAddPlayer = (Button) findViewById(R.id.btnAddPlayer);
         btnAddPlayer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(players.size() < MAX_PLAYERS) {
+                    final LinearLayout layout = new LinearLayout(SelectionPlayerActivity.this);
+                    layout.setOrientation(LinearLayout.HORIZONTAL);
+
                     EditText txtNewPlayer = new EditText(SelectionPlayerActivity.this);
-                    txtNewPlayer.setText("Player" + (players.size() + 1));
+                    txtNewPlayer.setText("Player" + (playerName++));
                     txtNewPlayer.setTextColor(Color.BLACK);
+                    txtNewPlayer.setMaxLines(1);
                     txtNewPlayer.setId(players.size());
-                    txtNewPlayer.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+                    txtNewPlayer.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
-                    layoutPlayer.addView(txtNewPlayer);
+                    layout.addView(txtNewPlayer);
 
-                    players.add(new Player());
+                    final Player player = new Player();
+                    players.add(player);
+
+                    if(players.size()==MAX_PLAYERS) {
+                        btnAddPlayer.setVisibility(View.INVISIBLE);
+                        btnAddPlayer.setLayoutParams(new LinearLayout.LayoutParams(0,0));
+                    }
+
+                    if(players.size()!=1) {
+                        Button button = new Button(SelectionPlayerActivity.this);
+                        button.setText("X");
+                        button.setTextSize(20.0f);
+                        button.setOnClickListener(new View.OnClickListener() {
+
+                            @Override
+                            public void onClick(View v) {
+                                players.remove(player);
+                                layoutPlayer.removeView(layout);
+                                btnAddPlayer.setVisibility(View.VISIBLE);
+                                btnAddPlayer.setLayoutParams(new LinearLayout.LayoutParams(58, LinearLayout.LayoutParams.WRAP_CONTENT));
+                            }
+                        });
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(75,75);
+                        layoutParams.setMargins(20,5,5,5);
+
+                        button.setLayoutParams(layoutParams);
+                        layout.addView(button);
+                    }
+
+                    layoutPlayer.addView(layout);
                 }
                 else {
                     Toast.makeText(SelectionPlayerActivity.this, MAX_PLAYERS + " joueurs maximum", Toast.LENGTH_SHORT).show();
