@@ -5,15 +5,10 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.provider.MediaStore;
-import android.content.Intent;
-import android.graphics.Color;
-import android.os.Handler;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.MediaStore;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,7 +17,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class LaunchPlayerGameActivity extends ActionBarActivity {
+public class LaunchPlayerGameActivity extends Activity {
 
     private int color;
     private ArrayList<Player> players;
@@ -32,6 +27,7 @@ public class LaunchPlayerGameActivity extends ActionBarActivity {
     private final static double maxValue = Math.sqrt(255 * 255 * 3);
     private double ratio;
     private ArrayList<Bitmap> bitmapList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,20 +49,24 @@ public class LaunchPlayerGameActivity extends ActionBarActivity {
 
         bitmapList = new ArrayList<>();
 
+        launchNewGameInterface();
+    }
+
+    private void launchNewGameInterface(){
+
         //lecture et set nom joueur
         String playerName = players.get(currentPlayer).getPseudo();
         TextView playerNameTextView = (TextView)findViewById(R.id.textPlayerName);
         playerNameTextView.setText(this.getString(R.string.player_turn) + playerName);
 
-
         //détermination couleur random
         Random rand = new Random();
 
         int Red = rand.nextInt(255);
-        int Green= rand.nextInt(255);
-        int Blue= rand.nextInt(255);
+        int Green = rand.nextInt(255);
+        int Blue = rand.nextInt(255);
 
-        color=Color.rgb(Red, Green, Blue);
+        color = Color.rgb(Red, Green, Blue);
 
         //ajout couleur sur l'interface
         FrameLayout colorLayout = (FrameLayout)findViewById(R.id.color_layout);
@@ -89,12 +89,13 @@ public class LaunchPlayerGameActivity extends ActionBarActivity {
                 if(cpt > 0) {
                     chronoTextView.setText(String.valueOf(cpt));
                     cpt--;
+                    handler.postDelayed(this, 1000);
                 }
                 else{
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     startActivityForResult(intent,CAPTURE_IMAGE);
                 }
-                handler.postDelayed(this, 1000);
+
             }
         }, 1000);
     }
@@ -124,6 +125,18 @@ public class LaunchPlayerGameActivity extends ActionBarActivity {
                         setPlayerScore(treatBitmap(bitmap));
                     }
                 }
+                //test si il reste des joueurs devant jouer
+                if(currentPlayer > players.size() - 1){
+                    currentPlayer++;
+                    launchNewGameInterface();
+                }
+                else{
+                    //Intent reviewIntent = new Intent(this, ReviewActivity.class);
+                    //startGameIntent.putParcelableArrayListExtra("PLAYERS", players);
+                    //startActivity(reviewIntent);
+                    Log.e("launch", "fini");
+                }
+                break;
         }
     }
 
