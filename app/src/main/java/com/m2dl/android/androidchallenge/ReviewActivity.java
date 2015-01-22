@@ -55,7 +55,7 @@ public class ReviewActivity extends ActionBarActivity {
         btnNewGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                newGame();
             }
         });
 
@@ -63,7 +63,8 @@ public class ReviewActivity extends ActionBarActivity {
         btnReGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                setResult(RESULT_CANCELED);
+                finish();
             }
         });
     }
@@ -92,12 +93,7 @@ public class ReviewActivity extends ActionBarActivity {
     }
 
     public void newGame() {
-        Intent intent = new Intent(this,SelectionPlayerActivity.class);
-        startActivity(intent);
-    }
-
-    public void playAgain() {
-        setResult(RESULT_CANCELED);
+        setResult(RESULT_FIRST_USER);
         finish();
     }
 

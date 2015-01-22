@@ -57,6 +57,8 @@ public class LaunchPlayerGameActivity extends Activity {
                 ratio = 0.35; //FACILE
         }
 
+        bitmapList = new ArrayList<>();
+
         launchNewGameInterface();
     }
 
@@ -65,7 +67,7 @@ public class LaunchPlayerGameActivity extends Activity {
 
         //Initialisation des variables globales
         currentPlayer = 0;
-        bitmapList = new ArrayList<>();
+        bitmapList.clear();
 
         //lecture et set nom joueur
         String playerName = players.get(currentPlayer).getPseudo();
@@ -125,6 +127,9 @@ public class LaunchPlayerGameActivity extends Activity {
                 }
                 else if(resultCode==RESULT_CANCELED) {
                     launchNewGameInterface();
+                }
+                else if(resultCode==RESULT_FIRST_USER) {
+                    finish();
                 }
                 break;
             //Si l'activité était une prise de photo
