@@ -87,19 +87,16 @@ public class LaunchPlayerGameActivity extends Activity {
         FrameLayout colorLayout = (FrameLayout)findViewById(R.id.color_layout);
         colorLayout.setBackgroundColor(color);
 
-        TextView colorNameTextView = (TextView)findViewById(R.id.textColorName);
-        colorNameTextView.setText(String.valueOf(Red) + " " + String.valueOf(Green) + " " + String.valueOf(Blue));
-
         //ajout couleur dans la classe Player
         players.get(currentPlayer).setColor(color);
 
         //lancement chrono 7 sec
         TextView chronoTextView = (TextView)findViewById(R.id.textChronoLaunch);
-        chronoTextView.setText("7");
+        chronoTextView.setText("6");
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             TextView chronoTextView = (TextView)findViewById(R.id.textChronoLaunch);
-            int cpt = 6;
+            int cpt = 5;
 
             @Override
             public void run() {
