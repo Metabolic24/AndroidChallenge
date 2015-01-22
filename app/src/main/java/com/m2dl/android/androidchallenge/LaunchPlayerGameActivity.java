@@ -106,7 +106,6 @@ public class LaunchPlayerGameActivity extends Activity {
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     startActivityForResult(intent,CAPTURE_IMAGE);
                 }
-
             }
         }, 1000);
     }
@@ -135,18 +134,20 @@ public class LaunchPlayerGameActivity extends Activity {
                     if (bitmap!=null) {
                         setPlayerScore(treatBitmap(bitmap));
                     }
+
+                    //test si il reste des joueurs devant jouer
+                    if(currentPlayer > players.size() - 1){
+                        currentPlayer++;
+                        launchNewGameInterface();
+                    }
+                    else{
+                        //Intent reviewIntent = new Intent(this, ReviewActivity.class);
+                        //startGameIntent.putParcelableArrayListExtra("PLAYERS", players);
+                        //startActivity(reviewIntent);
+                        Log.e("launch", "fini");
+                    }
                 }
-                //test si il reste des joueurs devant jouer
-                if(currentPlayer > players.size() - 1){
-                    currentPlayer++;
-                    launchNewGameInterface();
-                }
-                else{
-                    //Intent reviewIntent = new Intent(this, ReviewActivity.class);
-                    //startGameIntent.putParcelableArrayListExtra("PLAYERS", players);
-                    //startActivity(reviewIntent);
-                    Log.e("launch", "fini");
-                }
+
                 break;
         }
     }
