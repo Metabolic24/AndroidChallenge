@@ -41,7 +41,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="couleur"
         android:id="@+id/textColorName"
         android:layout_marginBottom="59dp"
         android:layout_above="@+id/textChronoLaunch"
