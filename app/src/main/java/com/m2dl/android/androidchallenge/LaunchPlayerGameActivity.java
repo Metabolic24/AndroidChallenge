@@ -46,7 +46,7 @@ public class LaunchPlayerGameActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setContentView(R.layout.activity_launch_player_game);
         players = getIntent().getExtras().getParcelableArrayList("PLAYERS");
 
         switch(getIntent().getExtras().getInt("DIFFICULTY")) {
@@ -65,12 +65,15 @@ public class LaunchPlayerGameActivity extends Activity {
         launchNewGameInterface();
     }
 
-    private void launchNewGameInterface(){
+    public void newGame() {
         setContentView(R.layout.activity_launch_player_game);
-
         //Initialisation des variables globales
         currentPlayer = 0;
         bitmapList.clear();
+        launchNewGameInterface();
+    }
+
+    private void launchNewGameInterface(){
 
         //lecture et set nom joueur
         String playerName = players.get(currentPlayer).getPseudo();
@@ -126,7 +129,7 @@ public class LaunchPlayerGameActivity extends Activity {
                     showBitmap(0);
                 }
                 else if(resultCode==RESULT_CANCELED) {
-                    launchNewGameInterface();
+                    newGame();
                 }
                 else if(resultCode==RESULT_FIRST_USER) {
                     finish();
@@ -220,7 +223,6 @@ public class LaunchPlayerGameActivity extends Activity {
         return score;
     }
 
-<<<<<<< HEAD
     public void deletePhoto() {
         // Find the last picture
         String[] projection = new String[]{
@@ -239,10 +241,10 @@ public class LaunchPlayerGameActivity extends Activity {
             String imageLocation = cursor.getString(1);
             File imageFile = new File(imageLocation);
             imageFile.delete();
-            if(imageFile.exists()){
+            if (imageFile.exists()) {
                 try {
                     imageFile.getCanonicalFile().delete();
-                    if(imageFile.exists()){
+                    if (imageFile.exists()) {
                         getApplicationContext().deleteFile(imageFile.getName());
                     }
                 } catch (IOException e) {
@@ -251,7 +253,9 @@ public class LaunchPlayerGameActivity extends Activity {
 
             }
         }
-=======
+
+    }
+
     public void showBitmap(final int playerIndex) {
 
         setContentView(new View(this));
@@ -318,7 +322,7 @@ public class LaunchPlayerGameActivity extends Activity {
         alert.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                startActivity(nextIntent);
+                startActivityForResult(nextIntent, REVIEW_ACTIVITY);
             }
         });
 
@@ -328,6 +332,5 @@ public class LaunchPlayerGameActivity extends Activity {
     @Override
     public void onBackPressed() {
         //Nothing
->>>>>>> 50535adafbfa93313961b0cb89c541db3afe94dc
     }
 }

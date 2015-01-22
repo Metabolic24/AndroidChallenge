@@ -1,11 +1,6 @@
 package com.m2dl.android.androidchallenge;
 
 import android.app.Activity;
-<<<<<<< HEAD
-=======
-import android.content.Intent;
-import android.graphics.Color;
->>>>>>> 50535adafbfa93313961b0cb89c541db3afe94dc
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
