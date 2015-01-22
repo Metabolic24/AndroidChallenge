@@ -7,7 +7,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Choose your player"
+        android:text="Choose the difficulty:"
+        android:id="@+id/lblChooseDifficulty" />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinnerDifficulty"
+        android:spinnerMode="dropdown" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Choose your player:"
         android:id="@+id/lblChoosePlayer" />
 
     <LinearLayout
@@ -27,7 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="When you are ready"
+        android:text="When you are ready:"
         android:id="@+id/lblGo" />
 
     <Button
