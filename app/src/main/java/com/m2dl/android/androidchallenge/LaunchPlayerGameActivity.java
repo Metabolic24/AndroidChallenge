@@ -3,12 +3,14 @@ package com.m2dl.android.androidchallenge;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -35,6 +37,7 @@ public class LaunchPlayerGameActivity extends Activity {
     private ArrayList<Player> players;
     private int currentPlayer;
 
+    private final Handler handlerVibration = new Handler();
 
     private double ratio;
     private ArrayList<Bitmap> bitmapList;
@@ -106,6 +109,22 @@ public class LaunchPlayerGameActivity extends Activity {
                     handler.postDelayed(this, 1000);
                 }
                 else{
+                    handlerVibration.postDelayed(new Runnable() {
+                        int cptTempsRestant = 10;
+
+                        @Override
+                        public void run() {
+                            if(cptTempsRestant > 0) {
+                                ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(100);
+                                cptTempsRestant--;
+                                handlerVibration.postDelayed(this, 2000);
+                            }
+                            else{
+                                //stop activite photo
+                            }
+                        }
+                    }, 2000);
+
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     startActivityForResult(intent,CAPTURE_IMAGE);
                 }
@@ -149,6 +168,9 @@ public class LaunchPlayerGameActivity extends Activity {
                     if (bitmap!=null) {
                         setPlayerScore(treatBitmap(bitmap));
                     }
+
+                    //arret vibration
+                    handlerVibration.removeCallbacksAndMessages(null);
 
                     //test si il reste des joueurs devant jouer
                     if(currentPlayer < players.size()-1){
