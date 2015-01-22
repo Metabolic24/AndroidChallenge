@@ -8,7 +8,9 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/chooseDifficulty"
-        android:id="@+id/lblChooseDifficulty" />
+        android:id="@+id/lblChooseDifficulty"
+        android:layout_gravity="center"
+        android:layout_marginTop="15dp" />
 
     <Spinner
         android:layout_width="match_parent"
@@ -21,7 +23,8 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/choosePlayer"
-        android:id="@+id/lblChoosePlayer" />
+        android:id="@+id/lblChoosePlayer"
+        android:layout_gravity="center" />
 
     <LinearLayout
         android:orientation="vertical"
@@ -30,17 +33,18 @@
         android:id="@+id/layoutPlayer"></LinearLayout>
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="58dp"
         android:layout_height="wrap_content"
-        android:text="@string/addPlayer"
+        android:text="+"
         android:id="@+id/btnAddPlayer"
-        android:layout_gravity="right" />
+        android:layout_gravity="left|right"
+        android:textSize="30dp" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/play"
         android:id="@+id/btnGo"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal|top" />
 
 </LinearLayout>
