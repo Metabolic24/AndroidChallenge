@@ -31,25 +31,7 @@ public class LaunchPlayerGameActivity extends ActionBarActivity {
     private final static int CAPTURE_IMAGE = 666;
     private final static double maxValue = Math.sqrt(255 * 255 * 3);
     private double ratio;
-    private ArrayList<Coords> okPixels;
-
-    public class Coords {
-        int x,y;
-
-        public Coords(int x,int y) {
-            this.x = x;
-            this.y = y;
-        }
-
-        public int getX() {
-            return x;
-        }
-
-        public int getY() {
-            return y;
-        }
-    }
-
+    private ArrayList<Bitmap> bitmapList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +40,18 @@ public class LaunchPlayerGameActivity extends ActionBarActivity {
 
         players = getIntent().getExtras().getParcelableArrayList("PLAYERS");
 
-        ratio = 0.25; //DIFFICILE
-        ratio = 0.30; //MOYEN
-        ratio = 0.35; //FACILE
+        switch(getIntent().getExtras().getInt("DIFFICULTY")) {
+            case 1:
+                ratio = 0.30; //MOYEN
+                break;
+            case 2:
+                ratio = 0.25; //DIFFICILE
+                break;
+            default:
+                ratio = 0.35; //FACILE
+        }
+
+        bitmapList = new ArrayList<>();
 
         //lecture et set nom joueur
         String playerName = players.get(currentPlayer).getPseudo();
@@ -136,17 +127,15 @@ public class LaunchPlayerGameActivity extends ActionBarActivity {
         }
     }
 
-    public void setPlayerScore(long size) {
-        double score = (okPixels.size()/size)*100;
-        players.get(currentPlayer).setScore((int)score);
+    public void setPlayerScore(int pixelsNumber) {
+        Bitmap bitmap = bitmapList.get(currentPlayer);
+        double score = (pixelsNumber * 100)/(bitmap.getHeight()*bitmap.getWidth());
+        players.get(currentPlayer).setScore((int) score);
     }
 
-    public long treatBitmap(Bitmap bitmap) {
+    public int treatBitmap(Bitmap bitmap) {
         ImageView iv = (ImageView)findViewById(R.id.imageView);
-
-        //Initialisation des variables dépendant de l'image
-
-        okPixels = new ArrayList<>();
+        int score = 0;
 
         bitmap = Bitmap.createScaledBitmap(bitmap,bitmap.getWidth()/10,bitmap.getHeight()/10,false);
 
@@ -154,12 +143,12 @@ public class LaunchPlayerGameActivity extends ActionBarActivity {
         for(int i=0;i<bitmap.getHeight();i++) {
             for (int j = 0; j < bitmap.getWidth(); j++) {
                 //On récupère sa couleur
-                int color = bitmap.getPixel(j, i);
+                int currentColor = bitmap.getPixel(j, i);
 
                 //On calcule les deltas en RGB
-                int deltaR = Color.red(color) - Color.red(color);
-                int deltaG = Color.green(color) - Color.green(color);
-                int deltaB = Color.blue(color) - Color.blue(color);
+                int deltaR = Color.red(currentColor) - Color.red(color);
+                int deltaG = Color.green(currentColor) - Color.green(color);
+                int deltaB = Color.blue(currentColor) - Color.blue(color);
 
                 //On récupère l'écart entre les deux couleurs
                 //En utilisant la racine carrée de la somme des carrés
@@ -167,42 +156,21 @@ public class LaunchPlayerGameActivity extends ActionBarActivity {
 
                 //Si le delta obtenu est supérieur au maximum autorisé
                 if (delta >= maxValue * ratio) {
+                    //On réduit l'affichage du pixel
                     bitmap.setPixel(j,i,Color.argb(50,Color.red(color),Color.green(color),Color.blue(color)));
-                    continue;
-                } else {
-                    //Sinon on le stocke dans notre map
-                    okPixels.add(new Coords(j,i));
-                    bitmap.setPixel(j,i,color);
-
                 }
-
+                //Sinon on incrémente le score
+                else {
+                    score++;
+                    //On colorie le pixel validé de la couleur recherchée
+                    bitmap.setPixel(j,i,color);
+                }
             }
         }
 
+        bitmapList.add(currentPlayer,bitmap);
+
         iv.setImageBitmap(bitmap);
-        return bitmap.getHeight()*bitmap.getWidth();
-    }
-    
-    
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_launch_player_game, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        return score;
     }
 }
