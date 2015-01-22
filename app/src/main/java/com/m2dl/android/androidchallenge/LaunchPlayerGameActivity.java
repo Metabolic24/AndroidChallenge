@@ -22,6 +22,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +45,7 @@ public class LaunchPlayerGameActivity extends Activity {
     private int currentPlayer;
 
     private final Handler handlerVibration = new Handler();
+    private boolean galery = false;
 
     private double ratio;
     private ArrayList<Bitmap> bitmapList;
@@ -236,7 +238,7 @@ public class LaunchPlayerGameActivity extends Activity {
                 //Si le delta obtenu est supérieur au maximum autorisé
                 if (delta >= MAX_DELTA * ratio) {
                     //On réduit l'affichage du pixel
-                    bitmap.setPixel(j,i,Color.argb(50,Color.red(color),Color.green(color),Color.blue(color)));
+                    bitmap.setPixel(j,i,Color.argb(50,Color.red(currentColor),Color.green(currentColor),Color.blue(currentColor)));
                 }
                 //Sinon on incrémente le score
                 else {
@@ -285,17 +287,12 @@ public class LaunchPlayerGameActivity extends Activity {
     }
 
     public void showBitmap(final int playerIndex) {
+        galery = true;
+        setContentView(R.layout.activity_galery);
 
-        setContentView(new View(this));
+        final ImageView input = (ImageView)findViewById(R.id.galeryView);
 
-        //Création de la Dialog
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-
-        alert.setCancelable(true);
-
-        // Création d'une zone d'édition de texte
-        final ImageView input = new ImageView(this);
-        final GestureDetector gestureDetector = new GestureDetector(alert.getContext(), new GestureDetector.SimpleOnGestureListener(){
+        final GestureDetector gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener(){
 
             int player = playerIndex;
             int nbPlayers = players.size();
@@ -339,35 +336,15 @@ public class LaunchPlayerGameActivity extends Activity {
             }
         });
 
-
         input.setImageBitmap(bitmapList.get(playerIndex));
-        alert.setView(input);
-
-        //Préparation de l'intent pour le lancement de la prochaine activité
-        final Intent nextIntent = new Intent(this, ReviewActivity.class);
-        nextIntent.putParcelableArrayListExtra("PLAYERS", players);
-
-        alert.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                startActivityForResult(nextIntent, REVIEW_ACTIVITY);
-            }
-        });
-
-
-        Dialog dialog = alert.show();
-        //Grab the window of the dialog, and change the width
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        Window window = dialog.getWindow();
-        lp.copyFrom(window.getAttributes());
-        //This makes the dialog take up the full width
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        window.setAttributes(lp);
     }
 
     @Override
     public void onBackPressed() {
-        //Nothing
+        if(galery) {
+            final Intent nextIntent = new Intent(this, ReviewActivity.class);
+            nextIntent.putParcelableArrayListExtra("PLAYERS", players);
+            startActivityForResult(nextIntent, REVIEW_ACTIVITY);
+        }
     }
 }

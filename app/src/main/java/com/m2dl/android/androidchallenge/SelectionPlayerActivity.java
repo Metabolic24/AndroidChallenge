@@ -103,7 +103,7 @@ public class SelectionPlayerActivity extends Activity {
             public void onClick(View v) {
                 boolean goToActivity = true;
                 for(int i = 0; i < layoutPlayer.getChildCount(); i++) {
-                    EditText txtTemp = (EditText) layoutPlayer.getChildAt(i);
+                    EditText txtTemp = (EditText) ((LinearLayout)(layoutPlayer.getChildAt(i))).getChildAt(0);
                     String pseudoTemp = txtTemp.getText().toString();
                     if(pseudoTemp == null || pseudoTemp.equals(""))
                     {
@@ -136,6 +136,7 @@ public class SelectionPlayerActivity extends Activity {
     }
 
     public void resetComponents() {
+        playerName = 1;
         layoutPlayer.removeViews(0,layoutPlayer.getChildCount());
         players.clear();
         ((Button) findViewById(R.id.btnAddPlayer)).performClick();
