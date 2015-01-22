@@ -2,23 +2,31 @@ package com.m2dl.android.androidchallenge;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -35,6 +43,7 @@ public class LaunchPlayerGameActivity extends Activity {
     private ArrayList<Player> players;
     private int currentPlayer;
 
+    private final Handler handlerVibration = new Handler();
 
     private double ratio;
     private ArrayList<Bitmap> bitmapList;
@@ -43,7 +52,7 @@ public class LaunchPlayerGameActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setContentView(R.layout.activity_launch_player_game);
         players = getIntent().getExtras().getParcelableArrayList("PLAYERS");
 
         switch(getIntent().getExtras().getInt("DIFFICULTY")) {
@@ -62,12 +71,15 @@ public class LaunchPlayerGameActivity extends Activity {
         launchNewGameInterface();
     }
 
-    private void launchNewGameInterface(){
+    public void newGame() {
         setContentView(R.layout.activity_launch_player_game);
-
         //Initialisation des variables globales
         currentPlayer = 0;
         bitmapList.clear();
+        launchNewGameInterface();
+    }
+
+    private void launchNewGameInterface(){
 
         //lecture et set nom joueur
         String playerName = players.get(currentPlayer).getPseudo();
@@ -106,6 +118,25 @@ public class LaunchPlayerGameActivity extends Activity {
                     handler.postDelayed(this, 1000);
                 }
                 else{
+                    handlerVibration.postDelayed(new Runnable() {
+                        int cptTempsRestant = 10;
+
+                        @Override
+                        public void run() {
+                            if(cptTempsRestant > 0) {
+                                if(cptTempsRestant < 5) {
+                                    ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(500);
+                                }
+                                cptTempsRestant--;
+                                handlerVibration.postDelayed(this, 2000);
+                            }
+                            else{
+                                ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(2000);
+                                //stop activite photo
+                            }
+                        }
+                    }, 2000);
+
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     startActivityForResult(intent,CAPTURE_IMAGE);
                 }
@@ -123,7 +154,7 @@ public class LaunchPlayerGameActivity extends Activity {
                     showBitmap(0);
                 }
                 else if(resultCode==RESULT_CANCELED) {
-                    launchNewGameInterface();
+                    newGame();
                 }
                 else if(resultCode==RESULT_FIRST_USER) {
                     finish();
@@ -150,13 +181,18 @@ public class LaunchPlayerGameActivity extends Activity {
                         setPlayerScore(treatBitmap(bitmap));
                     }
 
+                    //arret vibration
+                    handlerVibration.removeCallbacksAndMessages(null);
+
                     //test si il reste des joueurs devant jouer
                     if(currentPlayer < players.size()-1){
                         currentPlayer++;
+                        deletePhoto();
                         launchNewGameInterface();
 
                     }
                     else{
+                        deletePhoto();
                         Intent reviewIntent = new Intent(this, ReviewActivity.class);
                         reviewIntent.putParcelableArrayListExtra("PLAYERS", players);
                         startActivityForResult(reviewIntent,REVIEW_ACTIVITY);
@@ -213,6 +249,39 @@ public class LaunchPlayerGameActivity extends Activity {
 
         bitmapList.add(currentPlayer, bitmap);
         return score;
+    }
+
+    public void deletePhoto() {
+        // Find the last picture
+        String[] projection = new String[]{
+                MediaStore.Images.ImageColumns._ID,
+                MediaStore.Images.ImageColumns.DATA,
+                MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME,
+                MediaStore.Images.ImageColumns.DATE_TAKEN,
+                MediaStore.Images.ImageColumns.MIME_TYPE
+        };
+        final Cursor cursor = getContentResolver()
+                .query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null,
+                        null, MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC");
+
+        // Put it in the image view
+        if (cursor.moveToFirst()) {
+            String imageLocation = cursor.getString(1);
+            File imageFile = new File(imageLocation);
+            imageFile.delete();
+            if (imageFile.exists()) {
+                try {
+                    imageFile.getCanonicalFile().delete();
+                    if (imageFile.exists()) {
+                        getApplicationContext().deleteFile(imageFile.getName());
+                    }
+                } catch (IOException e) {
+                    Log.e("EIO", e.getCause().toString() + ", " + e.getMessage());
+                }
+
+            }
+        }
+
     }
 
     public void showBitmap(final int playerIndex) {
@@ -281,11 +350,20 @@ public class LaunchPlayerGameActivity extends Activity {
         alert.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                startActivity(nextIntent);
+                startActivityForResult(nextIntent, REVIEW_ACTIVITY);
             }
         });
 
-        alert.show();
+
+        Dialog dialog = alert.show();
+        //Grab the window of the dialog, and change the width
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        Window window = dialog.getWindow();
+        lp.copyFrom(window.getAttributes());
+        //This makes the dialog take up the full width
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        window.setAttributes(lp);
     }
 
     @Override

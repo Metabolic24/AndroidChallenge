@@ -1,8 +1,6 @@
 package com.m2dl.android.androidchallenge;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -10,27 +8,23 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 
 /**
  * Created by loic on 22/01/15.
  */
 public class ReviewActivity extends ActionBarActivity {
-    private LinearLayout layoutPlayer;
-    private ArrayList<Player> players;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review);
-        layoutPlayer = (LinearLayout) findViewById(R.id.layoutPlayerReview);
-        players = getIntent().getExtras().getParcelableArrayList("PLAYERS");
+        LinearLayout layoutPlayer = (LinearLayout) findViewById(R.id.layoutPlayerReview);
+        ArrayList<Player> players = getIntent().getExtras().getParcelableArrayList("PLAYERS");
         Collections.sort(players);
         int i = 0;
 
