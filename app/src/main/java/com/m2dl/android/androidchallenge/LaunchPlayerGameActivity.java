@@ -1,16 +1,19 @@
 package com.m2dl.android.androidchallenge;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
-import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,20 +24,25 @@ import java.util.Random;
 
 public class LaunchPlayerGameActivity extends Activity {
 
+    private static final int SWIPE_MIN_DISTANCE = 120;
+    private static final int SWIPE_MAX_OFF_PATH = 250;
+    private static final int SWIPE_THRESHOLD_VELOCITY = 200;
+    private final static int CAPTURE_IMAGE = 666;
+    private final static int REVIEW_ACTIVITY = 69;
+    private final static double MAX_DELTA = Math.sqrt(255 * 255 * 3);
+
     private int color;
     private ArrayList<Player> players;
-    private int currentPlayer = 0;
+    private int currentPlayer;
 
-    private final static int CAPTURE_IMAGE = 666;
-    private final static double maxValue = Math.sqrt(255 * 255 * 3);
+
     private double ratio;
     private ArrayList<Bitmap> bitmapList;
-    private final Handler handlerVibration = new Handler();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_launch_player_game);
 
         players = getIntent().getExtras().getParcelableArrayList("PLAYERS");
 
@@ -55,6 +63,11 @@ public class LaunchPlayerGameActivity extends Activity {
     }
 
     private void launchNewGameInterface(){
+        setContentView(R.layout.activity_launch_player_game);
+
+        //Initialisation des variables globales
+        currentPlayer = 0;
+        bitmapList.clear();
 
         //lecture et set nom joueur
         String playerName = players.get(currentPlayer).getPseudo();
@@ -93,22 +106,6 @@ public class LaunchPlayerGameActivity extends Activity {
                     handler.postDelayed(this, 1000);
                 }
                 else{
-                    handlerVibration.postDelayed(new Runnable() {
-                        int cptTempsRestant = 10;
-
-                        @Override
-                        public void run() {
-                            if(cptTempsRestant > 0) {
-                                ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(1000);
-                                cptTempsRestant--;
-                                handlerVibration.postDelayed(this, 2000);
-                            }
-                            else{
-                                //stop activite photo
-                            }
-                        }
-                    }, 2000);
-
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     startActivityForResult(intent,CAPTURE_IMAGE);
                 }
@@ -120,9 +117,21 @@ public class LaunchPlayerGameActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (requestCode) {
+            //Si l'activité est le récapitulatif des scores
+            case REVIEW_ACTIVITY:
+                if(resultCode==RESULT_OK) {
+                    showBitmap(0);
+                }
+                else if(resultCode==RESULT_CANCELED) {
+                    launchNewGameInterface();
+                }
+                else if(resultCode==RESULT_FIRST_USER) {
+                    finish();
+                }
+                break;
             //Si l'activité était une prise de photo
             case CAPTURE_IMAGE:
-                if (resultCode == Activity.RESULT_OK) {
+                if (resultCode == RESULT_OK) {
                     Bitmap bitmap = null;
                     ContentResolver cr = getContentResolver();
 
@@ -141,9 +150,6 @@ public class LaunchPlayerGameActivity extends Activity {
                         setPlayerScore(treatBitmap(bitmap));
                     }
 
-                    //arret vibration
-                    handlerVibration.removeCallbacksAndMessages(null);
-
                     //test si il reste des joueurs devant jouer
                     if(currentPlayer < players.size()-1){
                         currentPlayer++;
@@ -153,9 +159,12 @@ public class LaunchPlayerGameActivity extends Activity {
                     else{
                         Intent reviewIntent = new Intent(this, ReviewActivity.class);
                         reviewIntent.putParcelableArrayListExtra("PLAYERS", players);
-                        startActivity(reviewIntent);
-                        Log.e("launch", "fini");
+                        startActivityForResult(reviewIntent,REVIEW_ACTIVITY);
                     }
+                }
+                else {
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(intent,CAPTURE_IMAGE);
                 }
 
                 break;
@@ -164,8 +173,8 @@ public class LaunchPlayerGameActivity extends Activity {
 
     public void setPlayerScore(int pixelsNumber) {
         Bitmap bitmap = bitmapList.get(currentPlayer);
-        double score = (pixelsNumber * 100)/(bitmap.getHeight()*bitmap.getWidth());
-        players.get(currentPlayer).setScore((int) score);
+        int score = (pixelsNumber * 100)/(bitmap.getHeight()*bitmap.getWidth());
+        players.get(currentPlayer).setScore(score);
     }
 
     public int treatBitmap(Bitmap bitmap) {
@@ -189,7 +198,7 @@ public class LaunchPlayerGameActivity extends Activity {
                 double delta = Math.sqrt(deltaR * deltaR + deltaG * deltaG + deltaB * deltaB);
 
                 //Si le delta obtenu est supérieur au maximum autorisé
-                if (delta >= maxValue * ratio) {
+                if (delta >= MAX_DELTA * ratio) {
                     //On réduit l'affichage du pixel
                     bitmap.setPixel(j,i,Color.argb(50,Color.red(color),Color.green(color),Color.blue(color)));
                 }
@@ -204,5 +213,83 @@ public class LaunchPlayerGameActivity extends Activity {
 
         bitmapList.add(currentPlayer, bitmap);
         return score;
+    }
+
+    public void showBitmap(final int playerIndex) {
+
+        setContentView(new View(this));
+
+        //Création de la Dialog
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        alert.setCancelable(true);
+
+        // Création d'une zone d'édition de texte
+        final ImageView input = new ImageView(this);
+        final GestureDetector gestureDetector = new GestureDetector(alert.getContext(), new GestureDetector.SimpleOnGestureListener(){
+
+            int player = playerIndex;
+            int nbPlayers = players.size();
+
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                try {
+                    if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MAX_OFF_PATH)
+                        return false;
+                    // right to left swipe
+                    if(e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                        player = (player + 1);
+                        if(player==nbPlayers) {
+                            player = 0;
+                        }
+                        input.setImageBitmap(bitmapList.get(player));
+                    }
+                    //left to right swipe
+                    else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                        player = (player - 1);
+                        if(player<0) {
+                            player = nbPlayers - 1;
+                        }
+                        input.setImageBitmap(bitmapList.get(player));
+                    }
+                } catch (Exception e) {
+                    // nothing
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onDown(MotionEvent e) {
+                return true;
+            }
+        });
+
+        input.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                return gestureDetector.onTouchEvent(event);
+            }
+        });
+
+
+        input.setImageBitmap(bitmapList.get(playerIndex));
+        alert.setView(input);
+
+        //Préparation de l'intent pour le lancement de la prochaine activité
+        final Intent nextIntent = new Intent(this, ReviewActivity.class);
+        nextIntent.putParcelableArrayListExtra("PLAYERS", players);
+
+        alert.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                startActivity(nextIntent);
+            }
+        });
+
+        alert.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        //Nothing
     }
 }

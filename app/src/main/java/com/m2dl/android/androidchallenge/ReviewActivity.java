@@ -1,6 +1,7 @@
 package com.m2dl.android.androidchallenge;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -54,7 +55,7 @@ public class ReviewActivity extends ActionBarActivity {
         btnNewGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                newGame();
             }
         });
 
@@ -62,7 +63,8 @@ public class ReviewActivity extends ActionBarActivity {
         btnReGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                setResult(RESULT_CANCELED);
+                finish();
             }
         });
     }
@@ -88,5 +90,15 @@ public class ReviewActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void newGame() {
+        setResult(RESULT_FIRST_USER);
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        newGame();
     }
 }
