@@ -3,6 +3,7 @@ package com.m2dl.android.androidchallenge;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -14,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -129,10 +132,12 @@ public class LaunchPlayerGameActivity extends Activity {
                     //test si il reste des joueurs devant jouer
                     if(currentPlayer < players.size()-1){
                         currentPlayer++;
+                        deletePhoto();
                         launchNewGameInterface();
 
                     }
                     else{
+                        deletePhoto();
                         Intent reviewIntent = new Intent(this, ReviewActivity.class);
                         reviewIntent.putParcelableArrayListExtra("PLAYERS", players);
                         startActivity(reviewIntent);
@@ -186,5 +191,37 @@ public class LaunchPlayerGameActivity extends Activity {
 
         bitmapList.add(currentPlayer, bitmap);
         return score;
+    }
+
+    public void deletePhoto() {
+        // Find the last picture
+        String[] projection = new String[]{
+                MediaStore.Images.ImageColumns._ID,
+                MediaStore.Images.ImageColumns.DATA,
+                MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME,
+                MediaStore.Images.ImageColumns.DATE_TAKEN,
+                MediaStore.Images.ImageColumns.MIME_TYPE
+        };
+        final Cursor cursor = getContentResolver()
+                .query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null,
+                        null, MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC");
+
+        // Put it in the image view
+        if (cursor.moveToFirst()) {
+            String imageLocation = cursor.getString(1);
+            File imageFile = new File(imageLocation);
+            imageFile.delete();
+            if(imageFile.exists()){
+                try {
+                    imageFile.getCanonicalFile().delete();
+                    if(imageFile.exists()){
+                        getApplicationContext().deleteFile(imageFile.getName());
+                    }
+                } catch (IOException e) {
+                    Log.e("EIO", e.getCause().toString() + ", " + e.getMessage());
+                }
+
+            }
+        }
     }
 }
