@@ -10,6 +10,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
@@ -20,6 +24,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -31,7 +36,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class LaunchPlayerGameActivity extends Activity {
+public class LaunchPlayerGameActivity extends Activity implements SensorEventListener{
 
     private static final int SWIPE_MIN_DISTANCE = 120;
     private static final int SWIPE_MAX_OFF_PATH = 250;
@@ -50,11 +55,14 @@ public class LaunchPlayerGameActivity extends Activity {
     private double ratio;
     private ArrayList<Bitmap> bitmapList;
 
+    private SensorManager sm;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch_player_game);
+        changeColorOnTilt();
         players = getIntent().getExtras().getParcelableArrayList("PLAYERS");
 
         switch(getIntent().getExtras().getInt("DIFFICULTY")) {
@@ -346,5 +354,55 @@ public class LaunchPlayerGameActivity extends Activity {
             nextIntent.putParcelableArrayListExtra("PLAYERS", players);
             startActivityForResult(nextIntent, REVIEW_ACTIVITY);
         }
+    }
+
+    public void changeColorOnTilt() {
+        sm = (SensorManager) getSystemService(SENSOR_SERVICE);
+
+    }
+
+    protected void onResume() {
+        super.onResume();
+        Sensor mMagneticField = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sm.registerListener(this, mMagneticField, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    protected void onStop() {
+        sm.unregisterListener(this, sm.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD));
+        super.onStop();
+    }
+
+    public void onSensorChanged(SensorEvent event) {
+        int sensor = event.sensor.getType();
+        float [] values = event.values;
+
+        synchronized (this) {
+            if (sensor == Sensor.TYPE_ACCELEROMETER) {
+                float accField_x = values[0];
+                float accField_y = values[1];
+                float accField_z = values[2];
+                if(accField_x > 18 || accField_y > 18 || accField_z > 18) {
+                    Random rand = new Random();
+
+                    int Red = rand.nextInt(255);
+                    int Green = rand.nextInt(255);
+                    int Blue = rand.nextInt(255);
+
+                    color = Color.rgb(Red, Green, Blue);
+
+                    //ajout couleur sur l'interface
+                    FrameLayout colorLayout = (FrameLayout)findViewById(R.id.color_layout);
+                    colorLayout.setBackgroundColor(color);
+
+                    //ajout couleur dans la classe Player
+                    players.get(currentPlayer).setColor(color);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
     }
 }
