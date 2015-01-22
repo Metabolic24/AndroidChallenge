@@ -49,7 +49,9 @@ public class MainActivity extends ActionBarActivity {
 
         //Test
         currentColor = Color.RED;
-        ratio = 0.25; //On autorise 25% de marge
+        ratio = 0.25; //DIFFICILE
+        ratio = 0.30; //MOYEN
+        ratio = 0.35; //FACILE
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent,CAPTURE_IMAGE);
