@@ -49,6 +49,22 @@ public class ReviewActivity extends ActionBarActivity {
                 finish();
             }
         });
+
+        final Button btnNewGame = (Button) findViewById(R.id.btnNewGame);
+        btnNewGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        Button btnReGame = (Button) findViewById(R.id.btnRegame);
+        btnReGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
 

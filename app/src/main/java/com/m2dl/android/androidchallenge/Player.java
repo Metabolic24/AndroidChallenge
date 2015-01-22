@@ -77,6 +77,13 @@ public class Player implements Parcelable, Comparable<Player> {
 
     @Override
     public int compareTo(Player another) {
-        return -getScore() - another.getScore();
+        int compare = 0;
+        if(getScore() > another.getScore()) {
+            compare = -1;
+        }
+        if(getScore() < another.getScore()) {
+            compare = 1;
+        }
+        return compare;
     }
 }
